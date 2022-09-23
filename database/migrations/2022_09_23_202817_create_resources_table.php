@@ -16,8 +16,13 @@ return new class extends Migration
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('className');
             $table->string('description');
             $table->string('type');
+            // raw data
+            $table->json('pingColor')->nullable();
+            $table->integer('speed');
             $table->timestamps();
         });
     }

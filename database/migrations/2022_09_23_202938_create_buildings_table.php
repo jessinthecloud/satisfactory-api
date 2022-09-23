@@ -17,6 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
+            // raw data
+            $table->mediumInteger('buildMenuPriority')->nullable();
+            $table->string('className')->nullable();
+            $table->json('metadata')->nullable();
+            $table->json('size')->nullable();
             $table->timestamps();
         });
     }
