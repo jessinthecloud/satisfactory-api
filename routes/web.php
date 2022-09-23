@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+//    dump(json_decode(Storage::disk('public')->get('data.json')));
+    dump(collect(json_decode(Storage::disk('public')->get('data.json'))->recipes)->all());
 });
