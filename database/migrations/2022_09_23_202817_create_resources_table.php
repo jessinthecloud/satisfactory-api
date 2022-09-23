@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('className');
             $table->string('description');
-            $table->string('type');
+            $table->string('type')->nullable();
             // raw data
             $table->smallInteger('sinkPoints')->nullable();
             $table->mediumInteger('stackSize')->nullable();

@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 //    dd($data->all());
 //    dd($data->all()['items']->Desc_Coal_C, $data->all()['resources']->Desc_Coal_C);
+    dd($data->all()['miners']->Build_MinerMk2_C, $data->all()['buildings']->Desc_MinerMk2_C);
 //    dd($data->all()['items']->Desc_AluminumIngot_C);
 
     
