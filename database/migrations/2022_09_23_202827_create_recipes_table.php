@@ -27,6 +27,8 @@ return new class extends Migration
             $table->boolean('inMachine')->default(false);
             $table->boolean('inHand')->default(false);
             $table->boolean('inWorkshop')->default(false);
+            $table->json('producedIn')->nullable();
+            $table->json('ingredients')->nullable();
             $table->timestamps();
         });
     }

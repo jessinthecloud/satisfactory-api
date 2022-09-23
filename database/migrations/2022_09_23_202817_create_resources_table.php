@@ -23,6 +23,7 @@ return new class extends Migration
             // raw data
             $table->json('pingColor')->nullable();
             $table->integer('speed');
+            $table->json('producedIn')->nullable();
             $table->timestamps();
         });
     }
