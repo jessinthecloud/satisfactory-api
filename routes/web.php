@@ -15,5 +15,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 //    dump(json_decode(Storage::disk('public')->get('data.json')));
-    dump(collect(json_decode(Storage::disk('public')->get('data.json'))->recipes)->first());
+    $data = Cache::remember('raw-data', 300, function () {
+        return collect(json_decode(Storage::disk('public')->get('data.json')));
+    });
+
+//    dd($data->all());
+//    dd($data->all()['items']->Desc_Coal_C, $data->all()['resources']->Desc_Coal_C);
+//    dd($data->all()['items']->Desc_AluminumIngot_C);
+
+    
+    $data->each(function ($item, $key) {
+        
+    });
+    
 });
