@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('amount')->comment('Amount of resource produced');
             // raw data
             $table->mediumInteger('time');
+            $table->mediumInteger('manualTimeMultiplier')->default(1);
             $table->string('className')->nullable();
             $table->json('categories')->nullable();
             $table->boolean('alternate')->default(false);
