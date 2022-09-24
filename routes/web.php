@@ -38,64 +38,51 @@ Route::get('/', function () {
     
     $native_class_names = $data->pluck('NativeClass')->sort()->all();
     // Native classes
-    echo "<table>";
-    echo "<tr><th>Name</th><th>FQCN</th></tr>";
+    echo "<table>".PHP_EOL;
+    echo "<tr><th>Name</th><th>FQCN</th></tr>".PHP_EOL;
     foreach($native_class_names as $class_name_string){
         $fqcn = Str::between($class_name_string, "Class'", "'");
         $class_name = Str::remove('/Script/FactoryGame.FG', $fqcn);
 //        $class_name = implode(' ', Str::ucsplit($class_name));
-        echo "<tr><td>$class_name</td><td>$fqcn</td></tr>";
+        echo "<tr><td>$class_name</td><td>$fqcn</td></tr>".PHP_EOL;
     }
-    echo "</table>";
+    echo "</table>".PHP_EOL;
 
 //    dump($data->first());
     $important_classes = [
-        "Recipe",
-        "BuildableManufacturer",
-        "BuildableFrackingExtractor"
+//        "BuildableConveyorBelt",
+//        "Recipe",
+//        "BuildableResourceExtractor",
+//        "BuildableFrackingExtractor",
+//        "BuildableGeneratorFuel",
+//        "BuildableManufacturer",
+//        "BuildableManufacturerVariablePower",
+//        "BuildableStorage",
     ];
-//    dump($data->filter(function ($value, $key) use ($important_classes) {
-//        return Str::contains($value->NativeClass, $important_classes, true);
-//    })->all());
+
     echo "<ul style='list-style: none;'>";
     foreach($data as $data_row){
-        if(!in_array($data_row->shortClass, $important_classes)){
+        if(!in_array($data_row->shortClass, $important_classes) /*&& !Str::contains($data_row->shortClass, 'Descriptor')*/){
             continue;
         }
         echo "<li><strong>{$data_row->fqcn} : </strong><BR>";
-//            dump(array_column($data_row->Classes, 'ClassName'));
             echo "<ul>";
                 foreach($data_row->Classes as $class){
-//                var_dump($class);
-                    echo "<li>{$class->ClassName} <BR>";
-                    $properties = array_keys(get_object_vars($class));
-                    if($data_row->shortClass !== 'Recipe'){
-                        dump($properties);
+                    echo "<li>{$class->ClassName}";
+                    /*$properties = array_keys(get_object_vars($class));
+//                    if($data_row->shortClass !== 'Recipe'){
 //                        dump($class);
-                    } 
-                    echo "<BR></li>";
+//                    } 
+                        echo "<ul>";
+                            foreach($properties as $property){
+                                echo "<li>{$property}</li>";
+                            }
+                        echo "</ul>";*/
+                    echo "</li>";
                 }
             echo "</ul>";
         echo "</li>";
     }
     echo "</ul>";
-
-//    $raw_data = file_get_contents('/var/www/html/storage/app/public/Docs-fixed.json');
-//    $json_data = json_decode($raw_data);
-    /*echo match (json_last_error()) {
-        JSON_ERROR_NONE => ' - No errors',
-        JSON_ERROR_DEPTH => ' - Maximum stack depth exceeded',
-        JSON_ERROR_STATE_MISMATCH => ' - Underflow or the modes mismatch',
-        JSON_ERROR_CTRL_CHAR => ' - Unexpected control character found',
-        JSON_ERROR_SYNTAX => ' - Syntax error, malformed JSON',
-        JSON_ERROR_UTF8 => ' - Malformed UTF-8 characters, possibly incorrectly encoded',
-        default => ' - Unknown error',
-    };*/
-//    echo "<BR><HR><BR>";
-//    dump($json_data);
-//    print_r($json_data);
-
-    /*$data->each(function ($item, $key) {
-        
-    });*/
 });
+
