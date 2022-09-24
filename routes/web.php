@@ -15,64 +15,80 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 //    dump(json_decode(Storage::disk('public')->get('data.json')));
-    $data = Cache::remember('raw-data', 300, function () {
-        return collect(json_decode(Storage::disk('public')->get('data.json')));
+//    Cache::flush();
+    /*$data = Cache::remember('raw-game-data', 300, function () {
+        return collect(json_decode(Storage::disk('public')->get('Docs.json')));
     });
 
-    $categories = array_values(collect($data['buildings'])->pluck('categories')->filter()->flatten()->unique()->sort()->all());
-    echo "Categories: <ul>"; 
-    foreach($categories as $category){
-        $catname = implode(' ', Str::ucSplit(Str::betweenFirst($category, '_', '_')));
-        echo "<li>$category ($catname)</li>";
+    dump($data->all());*/
+//    dump(json_decode(Storage::disk('public')->get('Docs.pretty.json')));
+
+/*    $raw_data = '[
+  {
+    "NativeClass": "Class\'/Script/FactoryGame.FGItemDescriptor\'",
+    "Classes": [
+      {
+        "mFluidColor": "(B\u003d0,G\u003d0,R\u003d0,A\u003d0)",
+        "mGasColor": "(B\u003d0,G\u003d0,R\u003d0,A\u003d0)"
+      }
+      ]
     }
-    echo "</ul>";
-    
-     echo "<BR><BR>";
-    
-    /*foreach($data['buildings'] as $building){
-        echo "Name: {$building->name}<BR>";
-        echo "Categories: ".print_r($building->categories, true)."<BR>";
-        echo "Data: "; dump($building); echo "<BR>";
-        echo "<BR>";
-    }*/
-    
-//    dd($data->all());
-    dump($data->all());
-    // Transport
-    // Truck
-    dump($data->all()['recipes']->Recipe_TruckStation_C, $data->all()['buildings']->Desc_TruckStation_C, $data->all()['buildings']->Desc_Truck_C);
-    // Hard Drive
-//    dump($data->all()['schematics']->Research_HardDrive_0_C, $data->all()['items']->Desc_HardDrive_C); // maps to this item but it doesn't exist
-    // Battery
-//    dump($data->all()['recipes']->Recipe_Battery_C, $data->all()['items']->Desc_Battery_C);
-//    dump($data->all()['recipes']->Recipe_ResourceSink_C, $data->all()['buildings']->Desc_ResourceSink_C);
-//    dump($data->all()['recipes']->Recipe_ResourceSinkShop_C, $data->all()['buildings']->Desc_ResourceSinkShop_C);
-    // Equipment Workstation
-    dump($data->all()['recipes']->Recipe_Workshop_C, $data->all()['buildings']->Desc_Workshop_C);
-    // Workbench
-    dump($data->all()['recipes']->Recipe_WorkBench_C, $data->all()['buildings']->Desc_WorkBench_C);
-    // Equipment Item
-    dump("Equipment Item:",$data->all()['recipes']->Recipe_XenoZapper_C, $data->all()['items']->BP_EquipmentDescriptorShockShank_C);
-    // Compound Resource
-    dump("Compound Item:", $data->all()['recipes']->Recipe_Motor_C, $data->all()['items']->Desc_Motor_C,);
-    // Complex Resource
-    dump("Complex Item:",$data->all()['recipes']->Recipe_SpaceElevatorPart_1_C, $data->all()['items']->Desc_SpaceElevatorPart_1_C,);
-    // alt recipe
-    dump("Alt Recipe Item:",$data->all()['recipes']->Recipe_Alternate_PlasticSmartPlating_C, $data->all()['items']->Desc_SpaceElevatorPart_1_C,);
-    // Natural resource
-    dump("Natural Resource: ", $data->all()['items']->Desc_Coal_C, $data->all()['resources']->Desc_Coal_C);
-    // Building Item
-    dump("Building Item:",$data->all()['recipes']->Recipe_ConveyorBeltMk1_C, $data->all()['buildings']->Desc_ConveyorBeltMk1_C);
-    // Machine Building - Natural Resource
-    dump("Miner Building: ", $data->all()['miners']->Build_MinerMk2_C, $data->all()['buildings']->Desc_MinerMk2_C);
-    dump("Assembler Building: ", $data->all()['recipes']->Recipe_AssemblerMk1_C, $data->all()['buildings']->Desc_AssemblerMk1_C);
-    dump("Oil Extractor Building: ", $data->all()['recipes']->Recipe_FrackingExtractor_C, $data->all()['buildings']->Desc_FrackingExtractor_C);
-    dump("Oil Refinery Building: ", $data->all()['recipes']->Recipe_OilRefinery_C, $data->all()['buildings']->Desc_OilRefinery_C);
-//    dump($data->all()['items']->Desc_AluminumIngot_C);
+]';
 
+    echo "Detected encoding: "; var_dump(mb_detect_encoding($raw_data, null, strict: true));
+    echo "<BR><HR><BR>"; 
     
-    $data->each(function ($item, $key) {
+    print_r(json_decode(
+        $raw_data,
+        null,
+        512,
+        JSON_INVALID_UTF8_IGNORE | JSON_PARTIAL_OUTPUT_ON_ERROR 
+    ));*/
+    
+    // don't replace invalid chars with < ? > 
+    ini_set('mbstring.substitute_character', 'none');
+    
+    $regex = <<<'END'
+/
+  (
+    (?: [\x00-\x7F]                 # single-byte sequences   0xxxxxxx
+    |   [\xC0-\xDF][\x80-\xBF]      # double-byte sequences   110xxxxx 10xxxxxx
+    |   [\xE0-\xEF][\x80-\xBF]{2}   # triple-byte sequences   1110xxxx 10xxxxxx * 2
+    |   [\xF0-\xF7][\x80-\xBF]{3}   # quadruple-byte sequence 11110xxx 10xxxxxx * 3 
+    ){1,100}                        # ...one or more times
+  )
+| .                                 # anything else
+/x
+END;
+    
+     $raw_data = Storage::disk('public')->get('Docs.pretty.json');
+     
+     $replaced_data = preg_replace($regex, '$1', $raw_data);
+    
+     echo "Detected encoding: "; var_dump(mb_detect_encoding($replaced_data, null, strict: true));
+    echo "<BR><HR><BR>";
+
+    $json_data = json_decode(
+        $replaced_data,
+        null,
+        512,
+        JSON_INVALID_UTF8_IGNORE
+//        JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE | JSON_UNESCAPED_LINE_TERMINATORS | JSON_PARTIAL_OUTPUT_ON_ERROR 
+    );
+    echo match (json_last_error()) {
+        JSON_ERROR_NONE => ' - No errors',
+        JSON_ERROR_DEPTH => ' - Maximum stack depth exceeded',
+        JSON_ERROR_STATE_MISMATCH => ' - Underflow or the modes mismatch',
+        JSON_ERROR_CTRL_CHAR => ' - Unexpected control character found',
+        JSON_ERROR_SYNTAX => ' - Syntax error, malformed JSON',
+        JSON_ERROR_UTF8 => ' - Malformed UTF-8 characters, possibly incorrectly encoded',
+        default => ' - Unknown error',
+    };
+    echo "<BR><HR><BR>";
+    print_r($json_data);
+//    print_r(htmlspecialchars(file_get_contents('/var/www/html/storage/app/public/Docs.pretty.json'), ENT_IGNORE));
+//    print_r(json_decode(utf8_encode(trim(Storage::disk('public')->get('Docs.json')))));
+    /*$data->each(function ($item, $key) {
         
-    });
-    
+    });*/
 });
