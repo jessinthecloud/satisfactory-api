@@ -21,15 +21,15 @@ return new class extends Migration
             $table->string('description');
             $table->string('type')->nullable();
             // raw data
-            $table->smallInteger('sinkPoints')->nullable();
+            $table->json('producedIn')->nullable();
+            $table->integer('speed');
             $table->mediumInteger('stackSize')->nullable();
+            $table->boolean('liquid')->default(false);
             $table->mediumInteger('energyValue')->nullable();
             $table->mediumInteger('radioactiveDecay')->nullable();
-            $table->boolean('liquid')->default(false);
+            $table->smallInteger('sinkPoints')->nullable();
             $table->json('pingColor')->nullable();
             $table->json('fluidColor')->nullable();
-            $table->integer('speed');
-            $table->json('producedIn')->nullable();
             $table->timestamps();
         });
     }
