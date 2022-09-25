@@ -15,7 +15,6 @@ use \ForceUTF8\Encoding;
 */
 
 Route::get('/', function () {
-//    dump(json_decode(Storage::disk('public')->get('data.json')));
 //    Cache::flush();
 echo "<body style='background:#111; color:#eee; padding: 2rem; max-width:70rem; margin:0 auto'>";
     $data = Cache::remember('raw-game-data', 300, function () {
@@ -23,9 +22,6 @@ echo "<body style='background:#111; color:#eee; padding: 2rem; max-width:70rem; 
 //        $json_data = json_decode($raw_data);
         return collect(json_decode(Storage::disk('public')->get('Docs-fixed.json')));
     });
-//    dump(array_values($data->pluck('NativeClass')->map(function($item, $key){
-//        return Str::remove('Class\'/Script/FactoryGame.FG', $item);
-//    })->sort()->all()));
     
     $data->transform(function($item, $key){
         $fqcn = Str::between($item->NativeClass, "Class'", "'");
@@ -34,8 +30,6 @@ echo "<body style='background:#111; color:#eee; padding: 2rem; max-width:70rem; 
         $item->shortClass = $class_name;
         return $item;
     });
-    
-//    dd($data->first());
     
    /* $native_class_names = $data->pluck('NativeClass')->sort()->all();
     // Native classes
