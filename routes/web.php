@@ -17,6 +17,7 @@ use \ForceUTF8\Encoding;
 Route::get('/', function () {
 //    dump(json_decode(Storage::disk('public')->get('data.json')));
 //    Cache::flush();
+echo "<body style='background:#111; color:#eee; padding: 2rem; max-width:70rem; margin:0 auto'>";
     $data = Cache::remember('raw-game-data', 300, function () {
 //        $raw_data = file_get_contents('/var/www/html/storage/app/public/Docs-fixed.json');
 //        $json_data = json_decode($raw_data);
@@ -36,7 +37,7 @@ Route::get('/', function () {
     
 //    dd($data->first());
     
-    $native_class_names = $data->pluck('NativeClass')->sort()->all();
+   /* $native_class_names = $data->pluck('NativeClass')->sort()->all();
     // Native classes
     echo "<table>".PHP_EOL;
     echo "<tr><th>Name</th><th>FQCN</th></tr>".PHP_EOL;
@@ -46,7 +47,7 @@ Route::get('/', function () {
 //        $class_name = implode(' ', Str::ucsplit($class_name));
         echo "<tr><td>$class_name</td><td>$fqcn</td></tr>".PHP_EOL;
     }
-    echo "</table>".PHP_EOL;
+    echo "</table>".PHP_EOL;*/
 
 //    dump($data->first());
     $important_classes = [
@@ -62,27 +63,34 @@ Route::get('/', function () {
 
     echo "<ul style='list-style: none;'>";
     foreach($data as $data_row){
-        if(!in_array($data_row->shortClass, $important_classes) /*&& !Str::contains($data_row->shortClass, 'Descriptor')*/){
+        echo "<li><strong>{$data_row->shortClass} : </strong><BR>";
+        if(!in_array($data_row->shortClass, $important_classes) 
+//            && !Str::contains($data_row->shortClass, 'Descriptor')
+//            && !Str::contains($data_row->shortClass, 'Buildable')
+//            && !Str::contains($data_row->shortClass, 'Resource')
+            && $data_row->shortClass !== 'Recipe'
+        ){
             continue;
         }
-        echo "<li><strong>{$data_row->fqcn} : </strong><BR>";
             echo "<ul>";
                 foreach($data_row->Classes as $class){
                     echo "<li>{$class->ClassName}";
-                    /*$properties = array_keys(get_object_vars($class));
+                    $properties = array_keys(get_object_vars($class));
 //                    if($data_row->shortClass !== 'Recipe'){
-//                        dump($class);
+                        dump($class);
 //                    } 
-                        echo "<ul>";
-                            foreach($properties as $property){
-                                echo "<li>{$property}</li>";
-                            }
-                        echo "</ul>";*/
+//                        echo "<ul>";
+//                            foreach($properties as $property){
+//                                echo "<li>{$property}</li>";
+//                            }
+//                        echo "</ul>";
                     echo "</li>";
                 }
             echo "</ul>";
         echo "</li>";
     }
     echo "</ul>";
+    
+    echo "</body>";
 });
 
