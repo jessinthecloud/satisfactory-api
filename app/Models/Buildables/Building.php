@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Buildables\BuildingMetadata;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,6 +31,26 @@ class Building extends Model
         'Build_PowerPoleWallDouble_Mk3_C' => 'Desc_PowerPoleWallDoubleMk3_C',
     ];
     
+    protected BuildingMetadata $metadata;
+    
     protected $guarded = ['id'];
+
+    /**
+     * @return \App\Models\Buildables\BuildingMetadata
+     */
+    public function getMetadata() : BuildingMetadata
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * @param \App\Models\Buildables\BuildingMetadata $metadata
+     */
+    public function setMetadata(BuildingMetadata $metadata) : void
+    {
+        $this->metadata = $metadata;
+    }
+    
+    
 
 }

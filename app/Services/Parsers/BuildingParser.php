@@ -3,6 +3,7 @@
 namespace App\Services\Parsers;
 
 use App\Contracts\Parser;
+use App\Models\Buildables\BuildingMetadata;
 use App\Models\Building;
 use Illuminate\Support\Str;
 
@@ -17,16 +18,16 @@ class BuildingParser implements Parser
         if ( in_array($data->ClassName, static::MODEL_CLASS::IGNORED) ) {
             return null;
         }
-        // TODO: determine metadata
-        $metadata = $this->parseMetadata();
-        // determine size
+        
+        $metadata = $this->parseMetadata($data);
         $size = $this->parseSize($data->mSize ?? null, $data->mWidth ?? null, $data->mHeight ?? null,);
 
-        return new Building([
+        $building = new Building([
             'name'                             => $data->mDisplayName,
             'slug'                             => $this->slugify($data->mDisplayName, $data->ClassName),
             'description'                      => $data->mDescription,
             'className'                        => $this->correctClassName($data->ClassName),
+            'size'                             => $size,
             'speed'                            => $data->mSpeed ?? null,
             'lengthPerCost'                    => $data->mLengthPerCost ?? null,
             'maxLength'                        => $data->mMaxLength ?? null,
@@ -38,10 +39,13 @@ class BuildingParser implements Parser
             'flowLimit'                        => $data->mFlowLimit ?? null,
             'designPressure'                   => $data->mDesignPressure ?? null,
             'storageCapacity'                  => $data->mStorageCapacity ?? null,
-            'size'                             => $size,
             'estimatedMininumPowerConsumption' => $data->mEstimatedMininumPowerConsumption ?? null,
             'estimatedMaximumPowerConsumption' => $data->mEstimatedMaximumPowerConsumption ?? null,
         ]);
+        
+        $building->setMetadata($metadata);
+        
+        return $building;
     }
 
     private function parseSize($building_size, $width, $height) : array
@@ -92,59 +96,61 @@ class BuildingParser implements Parser
 		return $slug;
     }
 
-    private function parseMetadata()
+    private function parseMetadata($building) : BuildingMetadata
     {
-        /*const metadata: IBuildingMetadataSchema|IManufacturerAnyPowerMetadataSchema = {};
+        $metadata = new BuildingMetadata;
 
-		if (typeof building.mSpeed !== 'undefined') {
-			metadata.beltSpeed = parseFloat(building.mSpeed) / 2;
-			metadata.firstPieceCostMultiplier = 1;
-			metadata.lengthPerCost = 200; // belts don't have lengthPerCost attribute, but they build two meters per cost
-			metadata.maxLength = 4900; // belts don't have maxLength attribute, but they have max length of 49 meters
+		if (isset($building->mSpeed)) {
+			$metadata->beltSpeed = floatval($building->mSpeed) / 2;
+			$metadata->firstPieceCostMultiplier = 1;
+			$metadata->lengthPerCost = 200; // belts don't have lengthPerCost attribute, but they build two meters per cost
+			$metadata->maxLength = 4900; // belts don't have maxLength attribute, but they have max length of 49 meters
 		}
 
-		if (typeof building.mLengthPerCost !== 'undefined') {
-			metadata.lengthPerCost = parseFloat(building.mLengthPerCost);
-			metadata.firstPieceCostMultiplier = 1;
+		if (isset($building->mLengthPerCost)) {
+			$metadata->lengthPerCost = floatval($building->mLengthPerCost);
+			$metadata->firstPieceCostMultiplier = 1;
 		}
 
-		if (typeof building.mMaxLength !== 'undefined') {
-			metadata.maxLength = parseFloat(building.mMaxLength);
+		if (isset($building->mMaxLength)) {
+			$metadata->maxLength = floatval($building->mMaxLength);
 		}
 
-		if (typeof building.mPowerConsumption !== 'undefined') {
-			metadata.powerConsumption = parseFloat(building.mPowerConsumption);
+		if (isset($building->mPowerConsumption)) {
+			$metadata->powerConsumption = floatval($building->mPowerConsumption);
 		}
 
-		if (typeof building.mPowerConsumptionExponent !== 'undefined') {
-			metadata.powerConsumptionExponent = parseFloat(building.mPowerConsumptionExponent);
+		if (isset($building->mPowerConsumptionExponent)) {
+			$metadata->powerConsumptionExponent = floatval($building->mPowerConsumptionExponent);
 		}
 
-		if (typeof building.mEstimatedMininumPowerConsumption !== 'undefined' && typeof building.mEstimatedMaximumPowerConsumption !== 'undefined') {
-			metadata.isVariablePower = true;
-			metadata.minPowerConsumption = parseFloat(building.mEstimatedMininumPowerConsumption);
-			metadata.maxPowerConsumption = parseFloat(building.mEstimatedMaximumPowerConsumption);
-			metadata.powerConsumption = (metadata.minPowerConsumption + metadata.maxPowerConsumption) / 2;
+		if (isset($building->mEstimatedMininumPowerConsumption) && isset($building->mEstimatedMaximumPowerConsumption)) {
+			$metadata->isVariablePower = true;
+			$metadata->minPowerConsumption = floatval($building->mEstimatedMininumPowerConsumption);
+			$metadata->maxPowerConsumption = floatval($building->mEstimatedMaximumPowerConsumption);
+			$metadata->powerConsumption = ($metadata->minPowerConsumption + $metadata->maxPowerConsumption) / 2;
 		}
 
-		if (typeof building.mManufacturingSpeed !== 'undefined') {
-			metadata.manufacturingSpeed = parseFloat(building.mManufacturingSpeed);
+		if (isset($building->mManufacturingSpeed)) {
+			$metadata->manufacturingSpeed = floatval($building->mManufacturingSpeed);
 		}
 
-		if (typeof building.mInventorySizeX !== 'undefined' && typeof building.mInventorySizeY !== 'undefined') {
-			metadata.inventorySize = parseInt(building.mInventorySizeX) * parseInt(building.mInventorySizeY);
+		if (isset($building->mInventorySizeX) && isset($building->mInventorySizeY)) {
+			$metadata->inventorySize = parseInt($building->mInventorySizeX) * parseInt($building->mInventorySizeY);
 		}
 
-		if (typeof building.mFlowLimit !== 'undefined') {
-			metadata.flowLimit = parseFloat(building.mFlowLimit);
+		if (isset($building->mFlowLimit)) {
+			$metadata->flowLimit = floatval($building->mFlowLimit);
 		}
 
-		if (typeof building.mDesignPressure !== 'undefined') {
-			metadata.maxPressure = parseFloat(building.mDesignPressure);
+		if (isset($building->mDesignPressure)) {
+			$metadata->maxPressure = floatval($building->mDesignPressure);
 		}
 
-		if (typeof building.mStorageCapacity !== 'undefined') {
-			metadata.storageCapacity = parseFloat(building.mStorageCapacity);
-		}*/
+		if (isset($building->mStorageCapacity)) {
+			$metadata->storageCapacity = floatval($building->mStorageCapacity);
+		}
+        
+		return $metadata;
     }
 }
