@@ -55,25 +55,7 @@ class DescriptorParser implements Parser
 
     private function slugify(string $name, string $class_name) : string
     {
-        $slug = Str::slug($name);
-
-        if ( str_contains($class_name, 'Steel') || $class_name === 'Build_Wall_8x4_02_C' ) {
-            return $slug . '-steel';
-        }
-        if ( str_contains($class_name, 'Polished') ) {
-            return $slug . '-polished';
-        }
-        if ( str_contains($class_name, 'Metal') ) {
-            return $slug . '-metal';
-        }
-        if ( str_contains($class_name, 'Concrete') ) {
-            return $slug . '-concrete';
-        }
-        if ( str_contains($class_name, 'Asphalt') ) {
-            return $slug . '-asphalt';
-        }
-
-        return $slug;
+        return Str::slug($name);
     }
 
     private function correctClassName(string $class_name) : string
