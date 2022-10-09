@@ -10,7 +10,6 @@ class Building extends Model
 {
     use HasFactory;
     
-    // Classes to ignore
     const IGNORED = [
         'Build_JumpPadTilted_C',
         'Build_JumpPad_C',
@@ -23,8 +22,8 @@ class Building extends Model
     ];
 
     const NAME_FIXES = [
-        'Build_WalkwayTrun_C'             => 'Desc_WalkwayTurn_C', // nice typo CSS
-        'Build_CatwalkCorner_C'           => 'Desc_CatwalkTurn_C', // to match descriptor name
+        'Build_WalkwayTrun_C'             => 'Desc_WalkwayTurn_C',
+        'Build_CatwalkCorner_C'           => 'Desc_CatwalkTurn_C', // match descriptor name
         'Build_PowerPoleWall_Mk2_C'       => 'Desc_PowerPoleWallMk2_C',
         'Build_PowerPoleWall_Mk3_C'       => 'Desc_PowerPoleWallMk3_C',
         'Build_PowerPoleWallDouble_Mk2_C' => 'Desc_PowerPoleWallDoubleMk2_C',

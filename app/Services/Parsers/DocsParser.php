@@ -45,11 +45,11 @@ class DocsParser
         return match (true) {
             // parse buildings
             str_contains($fqcn, "Buildable") => BuildingParser::class,
-//            str_contains($fqcn, "Recipe") => RecipeParser::class,
-            // todo: parse descriptors
-    
+            // parse descriptors
+            str_contains($fqcn, "Descriptor") => DescriptorParser::class,
             // todo: parse recipes
-    
+//            str_contains($fqcn, "Recipe") => RecipeParser::class,
+
             // todo: parse items (resources?)
     
             // todo: parse schematics
