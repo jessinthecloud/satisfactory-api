@@ -11,5 +11,27 @@ class Recipe extends Model
     
     protected $guarded = ['id'];
 
+    const IGNORED = [];
+
+    const NAME_FIXES = [];
+    
+//    protected RecipeMetadata $metadata;
+
+    /**
+     * @return \App\Models\Recipes\RecipeMetadata
+     *
+    public function getMetadata() : RecipeMetadata
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * @param \App\Models\Recipes\RecipeMetadata $metadata
+     *
+    public function setMetadata(RecipeMetadata $metadata) : void
+    {
+        $this->metadata = $metadata;
+    }
+    //*/
 
 }

@@ -7,6 +7,9 @@ use App\Models\Buildables\BuildingMetadata;
 use App\Models\Buildables\Building;
 use Illuminate\Support\Str;
 
+/**
+ * greeny\SatisfactoryTools\bin\parseDocs\building.ts
+ */
 class BuildingParser implements Parser
 {
     const MODEL_CLASS = Building::class;

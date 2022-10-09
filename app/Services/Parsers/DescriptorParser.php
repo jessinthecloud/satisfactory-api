@@ -8,6 +8,11 @@ use App\Enums\StackSize;
 use App\Models\Descriptor;
 use Illuminate\Support\Str;
 
+/**
+ * greeny\SatisfactoryTools\bin\parseDocs\itemDescriptor.ts
+ * greeny\SatisfactoryTools\bin\parseDocs\resourceDescriptor.ts
+ * greeny\SatisfactoryTools\bin\parseDocs\buidlingDescriptor.ts
+ */
 class DescriptorParser implements Parser
 {
     const MODEL_CLASS = Descriptor::class;
