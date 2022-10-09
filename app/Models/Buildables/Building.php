@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Buildables;
 
 use App\Models\Buildables\BuildingMetadata;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +11,7 @@ class Building extends Model
     use HasFactory;
     
     // Classes to ignore
-    const IGNORE = [
+    const IGNORED = [
         'Build_JumpPadTilted_C',
         'Build_JumpPad_C',
         'Build_Stair_1b_C',

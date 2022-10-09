@@ -4,7 +4,7 @@ namespace App\Services\Parsers;
 
 use App\Contracts\Parser;
 use App\Models\Buildables\BuildingMetadata;
-use App\Models\Building;
+use App\Models\Buildables\Building;
 use Illuminate\Support\Str;
 
 class BuildingParser implements Parser
