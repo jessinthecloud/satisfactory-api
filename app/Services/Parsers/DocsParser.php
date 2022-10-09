@@ -68,7 +68,7 @@ class DocsParser
 //            dump($definition);
             foreach($definition->Classes as $class){
                 $thing = $parser->parse($class);
-                dd($thing);
+                dump($thing);
             };
         });
 

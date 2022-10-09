@@ -56,13 +56,13 @@ class BuildingParser implements Parser
 			'height' => 0,
 		];
 		if ($building_size) {
-			$size['width'] = $size['length'] = $building_size / 100;
+			$size['width'] = $size['length'] = intval($building_size) / 100;
 		}
 		if ($height) {
-			$size['height'] = $height / 100;
+			$size['height'] = intval($height) / 100;
 		}
 		if ($width) {
-			$size['width'] = $width / 100;
+			$size['width'] = intval($width) / 100;
 		}
 		
 		return $size;
@@ -136,7 +136,7 @@ class BuildingParser implements Parser
 		}
 
 		if (isset($building->mInventorySizeX) && isset($building->mInventorySizeY)) {
-			$metadata->inventorySize = parseInt($building->mInventorySizeX) * parseInt($building->mInventorySizeY);
+			$metadata->inventorySize = intval($building->mInventorySizeX) * intval($building->mInventorySizeY);
 		}
 
 		if (isset($building->mFlowLimit)) {
