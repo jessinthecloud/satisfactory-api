@@ -27,7 +27,7 @@ class Descriptor extends Model
     protected $guarded = ['id'];
 
     /**
-     * @return \App\Models\Buildables\DescriptorMetadata
+     * @return \App\Models\Descriptors\DescriptorMetadata
      *
     public function getMetadata() : DescriptorMetadata
     {
